@@ -6,6 +6,7 @@ import re
 import numpy as np
 import os.path as osp
 import argparse
+import os
 
 
 def fix_rec_name(rec_id):
@@ -38,7 +39,6 @@ def get_cats_list(train_episodes_file):
     """
     episodes = json.load(gzip.open(train_episodes_file))
     obj_cats, rec_cats = set(), set()
-
     for episode in episodes["episodes"]:
         obj_cat, start_rec_cat, goal_rec_cat = get_obj_rec_cat_in_eps(episode)
         obj_cats.add(obj_cat)
@@ -52,6 +52,53 @@ def get_cats_list(train_episodes_file):
     return obj_to_id_mapping, rec_to_id_mapping
 
 
+def collect_receptacle_positions(episode):
+    scene_data = json.load(open(episode["scene_id"]))
+    recep_positions = {}
+    for recep_type in ["object_instances", "articulated_object_instances"]:
+        for recep_data in scene_data[recep_type]:
+            recep_positions[recep_data["template_name"]] = recep_data[
+                "translation"
+            ]
+    return recep_positions
+
+
+def get_matching_recep_handle(receptacle_name, handles):
+    return [handle for handle in handles if handle in receptacle_name][0]
+
+
+def get_candidate_starts(objects, category):
+    obj_goals = []
+    for i, (obj, pos) in enumerate(objects):
+        if obj.split(".")[0][4:] == category:
+            obj_goal = {
+                "position": np.array(pos)[:3, 3].tolist(),
+                "object_name": obj,
+                "object_id": i,
+                "object_category": category,
+                "view_points": [],
+            }
+            obj_goals.append(obj_goal)
+
+    return obj_goals
+
+
+def get_candidate_receptacles(rec_positions, goal_recep_category):
+    goals = []
+    for recep, position in rec_positions.items():
+        recep_category = fix_rec_name(recep)
+        if recep_category == goal_recep_category:
+            goal = {
+                "position": position,
+                "object_name": recep,
+                "object_id": -1,
+                "object_category": recep_category,
+                "view_points": [],
+            }
+            goals.append(goal)
+    return goals
+
+
 def add_cat_fields_to_episodes(episodes_file, obj_to_id, rec_to_id):
     """
     Adds category fields to episodes
@@ -60,10 +107,21 @@ def add_cat_fields_to_episodes(episodes_file, obj_to_id, rec_to_id):
     episodes["obj_category_to_obj_category_id"] = obj_to_id
     episodes["recep_category_to_recep_category_id"] = rec_to_id
     for episode in episodes["episodes"]:
-        object_id, start_rec_id, goal_rec_id = get_obj_rec_cat_in_eps(episode)
-        episode["object_category"] = object_id
-        episode["start_recep_category"] = start_rec_id
-        episode["goal_recep_category"] = goal_rec_id
+        rec_positions = collect_receptacle_positions(episode)
+        obj_cat, start_rec_cat, goal_rec_cat = get_obj_rec_cat_in_eps(episode)
+        episode["object_category"] = obj_cat
+        episode["start_recep_category"] = start_rec_cat
+        episode["goal_recep_category"] = goal_rec_cat
+        episode["candidate_objects"] = get_candidate_starts(
+            episode["rigid_objs"], obj_cat
+        )
+        episode["candidate_start_receps"] = get_candidate_receptacles(
+            rec_positions, start_rec_cat
+        )
+        episode["candidate_goal_receps"] = get_candidate_receptacles(
+            rec_positions, goal_rec_cat
+        )
+
     return episodes
 
 
@@ -96,7 +154,7 @@ if __name__ == "__main__":
     print(f"Number of receptacle categories: {len(rec_to_id)}")
 
     # Add category fields and save episodes
-    for split in ["train", "minival", "val"]:
+    for split in os.listdir(data_dir):
         episodes_file = osp.join(
             data_dir, split, f"{source_episodes_tag}.json.gz"
         )
