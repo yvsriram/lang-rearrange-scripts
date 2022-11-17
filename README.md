@@ -12,7 +12,13 @@ Clone this repository and place it inside your `habitat-lab/`. directory
     python lang-rearrange-scripts/datasets/add_cat_fields_to_episodes.py
     ```
 
-2. **Train category-conditioned pick policy**
+2. **Generate text embeddings**: 
+    ```
+    python lang-rearrange-scripts/misc/get_llm_embeddings.py
+    ```
+
+
+3. **Train category-conditioned pick policy**
     ```
     ./lang-rearrange-scripts/slurm_scripts/obj_rearrange/pick/cat_pick.sh
     ```
