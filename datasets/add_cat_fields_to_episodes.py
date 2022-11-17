@@ -39,8 +39,6 @@ def get_cats_list(train_episodes_file):
     """
     episodes = json.load(gzip.open(train_episodes_file))
     obj_cats, rec_cats = set(), set()
-    count = 0
-    those_episodes = []
     for episode in episodes["episodes"]:
         obj_cat, start_rec_cat, goal_rec_cat = get_obj_rec_cat_in_eps(episode)
         obj_cats.add(obj_cat)
@@ -69,15 +67,9 @@ def get_matching_recep_handle(receptacle_name, handles):
     return [handle for handle in handles if handle in receptacle_name][0]
 
 
-def get_candidate_starts(
-    objects, category, name_to_receptacle, start_receptacle
-):
+def get_candidate_starts(objects, category):
     obj_goals = []
     for i, (obj, pos) in enumerate(objects):
-        import pdb
-
-        pdb.set_trace()
-
         if obj.split(".")[0][4:] == category:
             obj_goal = {
                 "position": np.array(pos)[:3, 3].tolist(),
@@ -112,7 +104,6 @@ def add_cat_fields_to_episodes(episodes_file, obj_to_id, rec_to_id):
     Adds category fields to episodes
     """
     episodes = json.load(gzip.open(episodes_file))
-    count = 0
     episodes["obj_category_to_obj_category_id"] = obj_to_id
     episodes["recep_category_to_recep_category_id"] = rec_to_id
     for episode in episodes["episodes"]:
@@ -122,10 +113,7 @@ def add_cat_fields_to_episodes(episodes_file, obj_to_id, rec_to_id):
         episode["start_recep_category"] = start_rec_cat
         episode["goal_recep_category"] = goal_rec_cat
         episode["candidate_objects"] = get_candidate_starts(
-            episode["rigid_objs"],
-            obj_cat,
-            episode["name_to_receptacle"],
-            start_rec_cat,
+            episode["rigid_objs"], obj_cat
         )
         episode["candidate_start_receps"] = get_candidate_receptacles(
             rec_positions, start_rec_cat
