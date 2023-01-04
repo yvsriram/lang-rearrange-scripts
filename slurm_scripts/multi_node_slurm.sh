@@ -16,11 +16,9 @@ echo $EXP_NAME
 
 set -x
 srun python -u -m habitat_baselines.run  \
-    --exp-config ${EXP_CONFIG} --run-type train TENSORBOARD_DIR "tb/${EXP_NAME}/" \
-    VIDEO_DIR video_dir/${EXP_NAME}/ EVAL_CKPT_PATH_DIR "data/new_checkpoints/${EXP_NAME}/" \
-    CHECKPOINT_FOLDER "data/new_checkpoints/${EXP_NAME}/" TASK_CONFIG.GYM.OBS_KEYS ${OBS_KEYS} \
-    TASK_CONFIG.SIMULATOR.HEAD_DEPTH_SENSOR.WIDTH ${VIS_RES} TASK_CONFIG.SIMULATOR.HEAD_DEPTH_SENSOR.HEIGHT ${VIS_RES} \
-    TASK_CONFIG.SIMULATOR.HEAD_RGB_SENSOR.WIDTH ${VIS_RES} TASK_CONFIG.SIMULATOR.HEAD_RGB_SENSOR.HEIGHT ${VIS_RES} \
-    TASK_CONFIG.SIMULATOR.ARM_DEPTH_SENSOR.WIDTH ${VIS_RES} TASK_CONFIG.SIMULATOR.ARM_DEPTH_SENSOR.HEIGHT ${VIS_RES} \
-    TASK_CONFIG.SIMULATOR.ARM_RGB_SENSOR.WIDTH ${VIS_RES} TASK_CONFIG.SIMULATOR.ARM_RGB_SENSOR.HEIGHT ${VIS_RES} \
-    SENSORS ${SENSORS} TASK_CONFIG.SIMULATOR.AGENT_0.SENSORS ${SENSORS} NUM_ENVIRONMENTS ${ENVS} TASK_CONFIG.DATASET.DATA_PATH ${DATA_PATH}
+    --exp-config ${EXP_CONFIG} --run-type train habitat_baselines.tensorboard_dir="tb/${EXP_NAME}/" \
+    habitat_baselines.video_dir=video_dir/${EXP_NAME}/ habitat_baselines.eval_ckpt_path_dir="data/new_checkpoints/${EXP_NAME}/" \
+    habitat_baselines.checkpoint_folder="data/new_checkpoints/${EXP_NAME}/" habitat.gym.obs_keys=${OBS_KEYS} \
+    habitat_baselines.wb.group=${WB_GROUP} habitat_baselines.wb.run_name=${WB_RUN_NAME} \
+    habitat_baselines.num_environments=${ENVS} habitat.dataset.data_path=${DATA_PATH} \
+    ${MORE_OPTIONS} habitat_baselines.writer_type=wb
