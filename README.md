@@ -5,7 +5,7 @@ Object rearrangement scripts
 Clone this repository and place it inside your `habitat-lab/`. directory
 
 ## Commands
-1. **Setup episodes**: Download the floorplanner episodes from [here](https://drive.google.com/drive/folders/1TrxG3Y1lS5Vys_KohultyI7brBkCR6fn?usp=share_link).
+1. **Setup episodes**: Download the floorplanner episodes from [here](https://drive.google.com/drive/folders/1caFggwzhCKlYqVKCQ9vBPZuTGRptq0sm?usp=share_link).
 
 
 2. **Generate text embeddings**: 
