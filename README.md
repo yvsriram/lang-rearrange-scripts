@@ -9,10 +9,13 @@ Clone this repository and place it inside your `habitat-lab/`. directory
 
 
 2. **Generate text embeddings**: 
+
     ```
     python lang-rearrange-scripts/misc/get_llm_embeddings.py
     ```
-    Alternatively, download `clip_embeddings.pickle` from [here](`https://drive.google.com/drive/folders/1TrxG3Y1lS5Vys_KohultyI7brBkCR6fn?usp=share_link`) and place it inside the `habitat-lab` directory.
+    Alternatively, download `clip_embeddings.pickle` from [here](https://drive.google.com/file/d/1sSDSKZgYeIPPk8OM4oWhLtAf4Z-zjAVy/view?usp=share_link) and place it inside the `habitat-lab` directory.
+
+        Note: Currently, the script doesn't generate embeddings for all objects. Please directly download.
 
 3. **Download assets**
     Download the floorplanner test scene from [here](https://drive.google.com/drive/folders/1TrxG3Y1lS5Vys_KohultyI7brBkCR6fn?usp=share_link) and extract it inside `data`.
