@@ -23,7 +23,7 @@ Download `clip_embeddings.pickle` from [here](https://drive.google.com/file/d/1s
 
         
 3. **Download assets**
-    Download the floorplanner test scene from [here](https://drive.google.com/drive/folders/1TrxG3Y1lS5Vys_KohultyI7brBkCR6fn?usp=share_link) and extract it inside `data`.
+    Download the floorplanner test scene from [here](https://drive.google.com/file/d/1CARUS5sO3NaiLq84lTFsz0DETYbxLdt1/view?usp=share_link) and extract it inside `data`.
 
     Download the "mini" floorplanner dataset with 3 training and 1 val scene from [here](https://drive.google.com/drive/folders/13tA7mU2fW3Z-PPliSeMCFxV8hwmmE36c).
     Download GSO and ABO objects following these [instructions](https://drive.google.com/drive/folders/1Qs99bMMC7ZpZwksZYDC_IkNqK_IB6ONU?usp=sharing).
