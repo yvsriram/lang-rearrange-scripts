@@ -20,12 +20,4 @@ export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.spawn_max_dists_to_obj=1.5 hab
 #export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo"
 #export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.rl.ddppo.pretrained_encoder=True habitat_baselines.rl.policy.ovrl=True habitat_baselines.rl.ddppo.pretrained_weights=resnet50_32bp_ovrl.pth habitat_baselines.rl.ddppo.backbone=resnet50"
 
-ENVS=1
-# sbatch --gpus ${GPUS} --ntasks-per-node ${GPUS} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/multi_node_slurm.sh
-python -u -m habitat_baselines.run  \
-    --exp-config ${EXP_CONFIG} --run-type train habitat_baselines.tensorboard_dir="tb/${EXP_NAME}/" \
-    habitat_baselines.video_dir=video_dir/${EXP_NAME}/ habitat_baselines.eval_ckpt_path_dir="data/new_checkpoints/${EXP_NAME}/" \
-    habitat_baselines.checkpoint_folder="data/new_checkpoints/${EXP_NAME}/" habitat.gym.obs_keys=${OBS_KEYS} \
-    habitat_baselines.wb.group=${WB_GROUP} habitat_baselines.wb.run_name=${WB_RUN_NAME} \
-    habitat_baselines.num_environments=${ENVS} habitat.dataset.data_path=${DATA_PATH} \
-    ${MORE_OPTIONS} habitat_baselines.writer_type=wb
+sbatch --gpus ${GPUS} --ntasks-per-node ${GPUS} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/multi_node_slurm.sh

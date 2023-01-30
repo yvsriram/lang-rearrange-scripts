@@ -21,4 +21,4 @@ srun python -u -m habitat_baselines.run  \
     habitat_baselines.checkpoint_folder="data/new_checkpoints/${EXP_NAME}/" habitat.gym.obs_keys=${OBS_KEYS} \
     habitat_baselines.wb.group=${WB_GROUP} habitat_baselines.wb.run_name=${WB_RUN_NAME} \
     habitat_baselines.num_environments=${ENVS} habitat.dataset.data_path=${DATA_PATH} \
-    ${MORE_OPTIONS} habitat_baselines.writer_type=wb
+    ${MORE_OPTIONS} habitat_baselines.writer_type=wb habitat_baselines.wb.entity=language-rearrangement habitat_baselines.wb.project_name=fp_manip
