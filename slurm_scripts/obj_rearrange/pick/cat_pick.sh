@@ -4,7 +4,7 @@ export EXP_CONFIG=habitat-baselines/habitat_baselines/config/rearrange/rl_skill.
 export ENVS=16
 export GPUS=8
 
-export INPUTS=obj_embedding_rgbd
+export INPUTS=obj_embedding_rgb
 export OBS_KEYS="['robot_head_rgb','object_embedding','joint','is_holding','relative_resting_position']"
 
 export DATA_PATH="data/datasets/floorplanner/v1/\{split\}/cat_split_1_test_scene_10k.json.gz"
