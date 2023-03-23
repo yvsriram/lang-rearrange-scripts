@@ -24,7 +24,32 @@ objects = [
     "sugar_box",
     "tomato_soup_can",
     "tuna_fish_can",
-]
+    "action_figure",
+    "android_figure",
+    "basket",
+    "book",
+    "cup",
+    "dishtowel",
+    "medicine_bottle",
+    "pencil_case",
+    "plate",
+    "shoe",
+    "soap_dish",
+    "sponge",
+    "stuffed_toy",
+    "sushi_mat",
+    "tape",
+    "hat",
+    "candle_holder",
+    "canister",
+    "mouse_pad",
+    "vase",
+    "screwdriver",
+    "can",
+    "can_opener",
+    "scissors",
+    "spatula"
+    ]
 
 
 def get_embedding(s):
@@ -47,5 +72,7 @@ save_path = "clip_embeddings.pickle"
 # Get CLIP embeddings
 with torch.no_grad():
     text_features = model.encode_text(text_inputs)
-embeddings = {o: t for o, t in zip(objects, text_features.detach().cpu().numpy())}
+embeddings = {
+    o: t for o, t in zip(objects, text_features.detach().cpu().numpy())
+}
 pickle.dump(embeddings, open(save_path, "wb"))
