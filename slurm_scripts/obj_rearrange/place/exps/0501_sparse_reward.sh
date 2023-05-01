@@ -11,7 +11,7 @@ export EPS_KEY="fp_minitrain_wo_viewpoints"
 export DATA_PATH="data/datasets/new_episodes/mini_cat_rearrange_floorplanner_without_viewpoints.json.gz"
 
 
-export EXP_NAME=place/input_${INPUTS}_${ENVS}x${GPUS}_envs_${EPS_KEY}_relaxed_version_gloo_backbone
+export EXP_NAME=place/input_${INPUTS}_${ENVS}x${GPUS}_envs_${EPS_KEY}_relaxed_version_gloo_backbone_drop_pen_2.0_sparse_reward_True
 
 
 mkdir -p slurm_logs/${EXP_NAME}
@@ -20,7 +20,7 @@ export WB_RUN_NAME=${EXP_NAME}
 export WB_GROUP=place
 export MORE_OPTIONS="benchmark/rearrange=cat_place"
 
-export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.spawn_max_dists_to_obj=2.5 habitat.task.biased_init=True habitat.task.measurements.place_reward.sparse_reward=False habitat.task.base_angle_noise=0.0 habitat.task.measurements.place_success.ee_resting_success_threshold=100 habitat.task.measurements.place_reward.drop_pen_type=constant habitat.task.measurements.place_reward.drop_pen=2.0"
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.spawn_max_dists_to_obj=2.5 habitat.task.biased_init=True habitat.task.measurements.place_reward.sparse_reward=True habitat.task.base_angle_noise=0.0 habitat.task.measurements.place_success.ee_resting_success_threshold=100 habitat.task.measurements.place_reward.drop_pen_type=constant habitat.task.measurements.place_reward.drop_pen=2.0"
 
 
 export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo "
