@@ -7,11 +7,13 @@ export GPUS=8
 export INPUTS=goal_recep_depth
 export OBS_KEYS="['robot_head_depth','goal_receptacle','cat_nav_goal_segmentation','joint','is_holding','relative_resting_position']"
 
-export EPS_KEY="fp_minitrain_wo_viewpoints"
-export DATA_PATH="data/datasets/new_episodes/mini_cat_rearrange_floorplanner_without_viewpoints.json.gz"
+# export EPS_KEY="fp_minitrain_wo_viewpoints"
+# export DATA_PATH="data/datasets/new_episodes/mini_cat_rearrange_floorplanner_without_viewpoints.json.gz"
 
+export EPS_KEY="v2_fp_minitrain"
+export DATA_PATH="data/episodes/rearrange/v2/minitrain/cat_npz-exp.json.gz"
 
-export EXP_NAME=place/input_${INPUTS}_${ENVS}x${GPUS}_envs_${EPS_KEY}_relaxed_version_gloo_backbone_drop_pen_1.0_goal_segmentation_new_wp_vel
+export EXP_NAME=place/input_${INPUTS}_${ENVS}x${GPUS}_envs_${EPS_KEY}_relaxed_version_drop_pen_1.0_spawn_near_viewpoints_at_dist_0.0_new
 
 
 mkdir -p slurm_logs/${EXP_NAME}
