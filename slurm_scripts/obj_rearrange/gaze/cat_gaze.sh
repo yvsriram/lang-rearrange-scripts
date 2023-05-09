@@ -10,8 +10,7 @@ export OBS_KEYS="['robot_head_depth','object_segmentation','object_embedding','j
 
 
 export EPS_KEY="v2_fp_minitrain"
-# export DATA_PATH="data/episodes/rearrange/v2/minitrain/cat_npz-exp-filtered-v2.json.gz"
-export DATA_PATH="data/cat_npz-exp-filtered-v2.json.gz"
+export DATA_PATH="data/episodes/rearrange/v2/minitrain/cat_npz-exp-filtered-v2.json.gz"
 
 export EXP_NAME=gaze/input_${INPUTS}_${ENVS}x${GPUS}_envs_${EPS_KEY}_spawn_near_viewpoints
 
