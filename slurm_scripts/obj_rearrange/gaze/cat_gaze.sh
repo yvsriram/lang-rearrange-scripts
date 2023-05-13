@@ -12,11 +12,8 @@ export OBS_KEYS="['robot_head_depth','object_segmentation','object_embedding','j
 export EPS_KEY="v2_fp_minitrain"
 export DATA_PATH="data/episodes/rearrange/v2/minitrain/cat_npz-exp-filtered-v2.json.gz"
 
-export EXP_NAME=gaze/input_${INPUTS}_${ENVS}x${GPUS}_envs_${EPS_KEY}_spawn_near_viewpoints
-
-
 export distance_from=agent
-export gaze_distance=1.0
+export gaze_distance=0.8
 
 # turned off by default
 angle_reward_dist=0.0
@@ -41,7 +38,12 @@ export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.pick_reward.angle
 export EXP_NAME="${EXP_NAME}_angle_reward_dist_${angle_reward_dist}_scale_${angle_reward_scale}"
 export EXP_NAME="${EXP_NAME}_success_dist_${gaze_distance}"
 
-export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo "
+export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo habitat.task.actions.arm_action.wrong_grasp_should_end=True"
+
+export EXP_NAME=gaze/input_${INPUTS}_${ENVS}x${GPUS}_envs_${EPS_KEY}_spawn_near_viewpoints_start_in_nav_mode_wrong_grasp_end
+
+export EXP_NAME="${EXP_NAME}_angle_reward_dist_${angle_reward_dist}_scale_${angle_reward_scale}"
+export EXP_NAME="${EXP_NAME}_success_dist_${gaze_distance}"
 
 sbatch --gpus ${GPUS} --ntasks-per-node ${GPUS} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
 
