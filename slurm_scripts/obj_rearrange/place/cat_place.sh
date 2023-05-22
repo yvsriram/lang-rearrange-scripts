@@ -1,29 +1,30 @@
 #!/bin/bash
 
 export EXP_CONFIG=habitat-baselines/habitat_baselines/config/rearrange/rl_skill.yaml
-export ENVS=32
+export ENVS=16
 export GPUS=8
 
 export INPUTS=goal_recep_depth
-export OBS_KEYS="['robot_head_depth','goal_receptacle','cat_nav_goal_segmentation','joint','is_holding','relative_resting_position']"
+export OBS_KEYS="['robot_head_depth','goal_receptacle','joint','is_holding','object_embedding','goal_recep_segmentation']"
 
-# export EPS_KEY="fp_minitrain_wo_viewpoints"
-# export DATA_PATH="data/datasets/new_episodes/mini_cat_rearrange_floorplanner_without_viewpoints.json.gz"
 
-export EPS_KEY="v2_fp_minitrain"
-export DATA_PATH="data/episodes/rearrange/v2/minitrain/cat_npz-exp.json.gz"
 
-export EXP_NAME=place/input_${INPUTS}_${ENVS}x${GPUS}_envs_${EPS_KEY}_relaxed_version_drop_pen_1.0_spawn_near_viewpoints_at_dist_0.0_new
+export EPS_KEY="v3_train"
+export DATA_PATH="data/episodes/rearrange/v3/train/cat_npz-exp-filtered-v2.json.gz"
+
+export EXP_NAME=place/input_${INPUTS}_${ENVS}x${GPUS}_envs_${EPS_KEY}_relaxed_version_with_stability_checks_start_in_nav_mode_with_manip_action_no_navmesh_penalty_new_reward_stability_0.05_pass_goal_seg
 
 
 mkdir -p slurm_logs/${EXP_NAME}
 export HABITAT_SIM_LOG=quiet
 export WB_RUN_NAME=${EXP_NAME}
 export WB_GROUP=place
+
 export MORE_OPTIONS="benchmark/rearrange=cat_place"
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.dataset.split=train"
 
-export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.spawn_max_dists_to_obj=2.5 habitat.task.biased_init=True habitat.task.measurements.place_reward.sparse_reward=False habitat.task.base_angle_noise=0.0 habitat.task.measurements.place_success.ee_resting_success_threshold=100 habitat.task.measurements.place_reward.drop_pen_type=constant habitat.task.measurements.place_reward.drop_pen=2.0"
 
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_place_reward.navmesh_violate_pen=0.0 habitat.task.measurements.ovmm_place_reward.stability_reward=0.05"
 
 export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo "
 
@@ -37,4 +38,4 @@ sbatch --gpus ${GPUS} --ntasks-per-node ${GPUS} --error slurm_logs/${EXP_NAME}/e
 #     habitat_baselines.checkpoint_folder="data/new_checkpoints/${EXP_NAME}/" habitat.gym.obs_keys=${OBS_KEYS} \
 #     habitat_baselines.wb.group=${WB_GROUP} habitat_baselines.wb.run_name=${WB_RUN_NAME} \
 #     habitat_baselines.num_environments=${ENVS} habitat.dataset.data_path=${DATA_PATH} \
-#     ${MORE_OPTIONS} habitat_baselines.writer_type=wb habitat_baselines.wb.entity=language-rearrangement habitat_baselines.wb.project_name=main_2212
+#     ${MORE_OPTIONS} habitat_baselines.writer_type=wb habitat_baselines.wb.entity=language-rearrangement habitat_baselines.wb.project_name=main_2212 habitat_baselines.rl.ppo.num_mini_batch=1
