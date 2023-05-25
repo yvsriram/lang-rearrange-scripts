@@ -6,13 +6,13 @@ export ENVS=16
 export GPUS=8
 
 export INPUTS=obj_emb_seg_depth
-export OBS_KEYS="['robot_head_depth','object_segmentation','object_embedding','joint','is_holding','relative_resting_position']"
+export OBS_KEYS="['robot_head_depth','object_segmentation','object_embedding','joint','is_holding']"
 
 
-export EPS_KEY="v2_fp_minitrain"
-export DATA_PATH="data/episodes/rearrange/v2/minitrain/cat_npz-exp-filtered-v2.json.gz"
+export EPS_KEY="v3_train"
+export DATA_PATH="data/episodes/rearrange/v3/train/cat_npz-exp-filtered-v2.json.gz"
 
-export distance_from=agent
+
 export gaze_distance=0.8
 
 # turned off by default
@@ -25,25 +25,19 @@ export HABITAT_SIM_LOG=quiet
 export WB_RUN_NAME=${EXP_NAME}
 export WB_GROUP=gaze
 export MORE_OPTIONS="benchmark/rearrange=cat_gaze"
-export spawn_reference="view_points"
-export spawn_reference_sampling="uniform" #"dist_to_center" 
 
 
-
-export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.spawn_max_dists_to_obj=0.0 habitat.task.num_spawn_attempts=200 habitat.task.spawn_reference=${spawn_reference} habitat.task.spawn_reference_sampling=${spawn_reference_sampling}"
-export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.actions.arm_action.gaze_distance_range=[0.1,${gaze_distance}] habitat.task.actions.arm_action.gaze_distance_from=${distance_from}"
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.actions.arm_action.gaze_distance_range=[0.1,${gaze_distance}]"
 
 export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.pick_reward.angle_reward_min_dist=${angle_reward_dist} habitat.task.measurements.pick_reward.angle_reward_scale=${angle_reward_scale}"
 
-export EXP_NAME="${EXP_NAME}_angle_reward_dist_${angle_reward_dist}_scale_${angle_reward_scale}"
-export EXP_NAME="${EXP_NAME}_success_dist_${gaze_distance}"
 
-export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo habitat.task.actions.arm_action.wrong_grasp_should_end=True"
+export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo"
 
-export EXP_NAME=gaze/input_${INPUTS}_${ENVS}x${GPUS}_envs_${EPS_KEY}_spawn_near_viewpoints_start_in_nav_mode_wrong_grasp_end
+export EXP_NAME=gaze/input_${INPUTS}_${ENVS}x${GPUS}_envs_${EPS_KEY}-wrng_grsp_shld_end-updtd_tilt_delta
 
-export EXP_NAME="${EXP_NAME}_angle_reward_dist_${angle_reward_dist}_scale_${angle_reward_scale}"
-export EXP_NAME="${EXP_NAME}_success_dist_${gaze_distance}"
+export EXP_NAME="${EXP_NAME}_angle_reward_dist-${angle_reward_dist}_scale-${angle_reward_scale}"
+export EXP_NAME="${EXP_NAME}-success_dist_${gaze_distance}"
 
 sbatch --gpus ${GPUS} --ntasks-per-node ${GPUS} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
 
