@@ -6,7 +6,7 @@ export ENVS=16
 export GPUS=8
 
 export INPUTS=obj_emb_seg_depth
-export OBS_KEYS="['robot_head_depth','object_segmentation','object_embedding','joint','is_holding']"
+export OBS_KEYS="['robot_head_depth','start_receptacle','start_recep_segmentation','object_segmentation','object_embedding','joint','is_holding']"
 
 
 export EPS_KEY="v3_train"
