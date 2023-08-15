@@ -2,8 +2,8 @@
 
 export EXP_CONFIG=ovmm/rl_discrete_skill.yaml
 export ENVS=16
-export GPUS=8
-export NODES=2
+export NODES=8
+export GPUS_PER_NODE=2
 export INPUTS=goal_recep_depth
 export OBS_KEYS="['head_depth','object_embedding','ovmm_nav_goal_segmentation','receptacle_segmentation','start_receptacle','robot_start_gps','robot_start_compass']"
 
@@ -11,7 +11,7 @@ export OBS_KEYS="['head_depth','object_embedding','ovmm_nav_goal_segmentation','
 export EPS_KEY="new_train"
 export DATA_PATH="data/datasets/ovmm/train/episodes.json.gz"
 
-export EXP_NAME=find_obj/input_${INPUTS}_${ENVS}x${GPUS}x${NODES}_envs_${EPS_KEY}
+export EXP_NAME=find_obj/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}
 
 
 mkdir -p slurm_logs/${EXP_NAME}
@@ -27,7 +27,7 @@ export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo habita
 
 echo $EXP_NAME
 
-sbatch --gpus ${GPUS} --ntasks-per-node ${GPUS} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
+sbatch  --gpus $((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
 
 # ENVS=1
 # export EXP_NAME=${EXP_NAME}_debug

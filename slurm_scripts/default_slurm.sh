@@ -22,7 +22,7 @@ echo $MAIN_ADDR
 echo $EXP_NAME
 
 set -x
-srun python -u -m habitat_baselines.run  \
+srun python -u -m torch.distributed.run  -m habitat_baselines.run  \
     --config-name ${EXP_CONFIG} habitat_baselines.evaluate=False habitat_baselines.tensorboard_dir="tb/${EXP_NAME}/" \
     habitat_baselines.video_dir=video_dir/${EXP_NAME}/ habitat_baselines.eval_ckpt_path_dir="data/new_checkpoints/${EXP_NAME}/" \
     habitat_baselines.checkpoint_folder="data/new_checkpoints/${EXP_NAME}/" habitat.gym.obs_keys=${OBS_KEYS} \
