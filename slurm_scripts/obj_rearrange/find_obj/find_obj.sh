@@ -2,8 +2,8 @@
 
 export EXP_CONFIG=ovmm/rl_discrete_skill.yaml
 export ENVS=16
-export NODES=8
-export GPUS_PER_NODE=2
+export NODES=2
+export GPUS_PER_NODE=8
 export INPUTS=goal_recep_depth
 export OBS_KEYS="['head_depth','object_embedding','ovmm_nav_goal_segmentation','receptacle_segmentation','start_receptacle','robot_start_gps','robot_start_compass']"
 
