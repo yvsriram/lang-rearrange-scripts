@@ -6,21 +6,31 @@ export NODES=2
 export GPUS_PER_NODE=8
 export INPUTS=goal_recep_depth
 export OBS_KEYS="['head_depth','object_embedding','ovmm_nav_goal_segmentation','receptacle_segmentation','start_receptacle','robot_start_gps','robot_start_compass']"
+export EXPLORE_REWARD=5.0
+export NO_AUGS=true
 
 
 export EPS_KEY="new_train"
 export DATA_PATH="data/datasets/ovmm/train/episodes.json.gz"
 
-export EXP_NAME=find_obj/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}
 
+export EXP_NAME=find_obj/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}_explore_reward_${EXPLORE_REWARD}_no_augs_${NO_AUGS}
 
 mkdir -p slurm_logs/${EXP_NAME}
 export HABITAT_SIM_LOG=quiet
 export WB_RUN_NAME=${EXP_NAME}
-export WB_GROUP=cat_place
+export WB_GROUP=find_obj
 
 export MORE_OPTIONS="benchmark/ovmm=nav_to_obj"
 export MORE_OPTIONS="${MORE_OPTIONS} habitat.dataset.split=train"
+
+
+if [ $NO_AUGS = true ]; then
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.lab_sensors.ovmm_nav_goal_segmentation_sensor.blank_out_prob=0.0 habitat.task.lab_sensors.receptacle_segmentation_sensor.blank_out_prob=0.0"
+fi
+
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_nav_to_obj_reward.explore_reward=${EXPLORE_REWARD}"
+
 
 
 export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo habitat_baselines.total_num_steps=4.0e8"
