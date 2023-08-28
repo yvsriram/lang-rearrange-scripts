@@ -3,8 +3,8 @@
 export EXP_CONFIG=ovmm/rl_cont_skill.yaml
 
 export ENVS=16
-export GPUS=8
-export NODES=8
+export GPUS_PER_NODE=8
+export NODES=2
 
 export INPUTS=obj_emb_seg_depth
 export OBS_KEYS="['head_depth','start_receptacle','start_recep_segmentation','object_segmentation','object_embedding','joint']"
@@ -32,17 +32,23 @@ export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.actions.arm_action.gaze_distan
 export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.pick_reward.angle_reward_min_dist=${angle_reward_dist} habitat.task.measurements.pick_reward.angle_reward_scale=${angle_reward_scale}"
 
 
+export NO_AUGS=True
+
 export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo habitat.dataset.split=train"
 
-export EXP_NAME=gaze/input_${INPUTS}_${ENVS}x${GPUS}x${NODES}_envs_${EPS_KEY}-wrng_grsp_shld_end-updtd_tilt_delta
+export EXP_NAME=gaze/input_${INPUTS}_${ENVS}x${GPUS}x${NODES}_envs_${EPS_KEY}
 
 export EXP_NAME="${EXP_NAME}_angle_reward_dist-${angle_reward_dist}_scale-${angle_reward_scale}"
-export EXP_NAME="${EXP_NAME}-success_dist_${gaze_distance}_newnam_debug"
+export EXP_NAME="${EXP_NAME}-success_dist_${gaze_distance}"_no_augs_${NO_AUGS}
+
+if [ $NO_AUGS = true ]; then
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.lab_sensors.object_segmentation_sensor.blank_out_prob=0.0 habitat.task.lab_sensors.start_recep_segmentation_sensor.blank_out_prob=0.0 habitat.task.base_angle_noise=0.0"
+fi
 
 mkdir -p slurm_logs/${EXP_NAME}
 export WB_RUN_NAME=${EXP_NAME}
 
-sbatch --gpus ${GPUS} --ntasks-per-node ${GPUS} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
+sbatch --gpus $((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
 
 
 # ENVS=1

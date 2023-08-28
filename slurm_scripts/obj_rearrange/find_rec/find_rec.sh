@@ -2,16 +2,18 @@
 
 export EXP_CONFIG=ovmm/rl_discrete_skill.yaml
 export ENVS=16
-export GPUS=4
-export NODES=1
+export GPUS_PER_NODE=8
+export NODES=2
 export INPUTS=goal_recep_depth
 export OBS_KEYS="['head_depth','ovmm_nav_goal_segmentation','receptacle_segmentation','goal_receptacle','robot_start_gps','robot_start_compass']"
 
-
+export NAVMESH_PEN=0.0
 export EPS_KEY="new_train"
 export DATA_PATH="data/datasets/ovmm/train/episodes.json.gz"
+export EXPLORE_REWARD=0.0
+export NO_AUGS=true
 
-export EXP_NAME=find_rec/input_${INPUTS}_${ENVS}x${GPUS}x${NODES}_envs_${EPS_KEY}
+export EXP_NAME=find_rec/input_${INPUTS}_${ENVS}x${GPUS}x${NODES}_envs_${EPS_KEY}_explore_reward_${EXPLORE_REWARD}_no_augs_${NO_AUGS}
 
 
 mkdir -p slurm_logs/${EXP_NAME}
@@ -25,9 +27,15 @@ export MORE_OPTIONS="${MORE_OPTIONS} habitat.dataset.split=train"
 
 export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo habitat_baselines.total_num_steps=4.0e8"
 
+if [ $NO_AUGS = true ]; then
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.lab_sensors.ovmm_nav_goal_segmentation_sensor.blank_out_prob=0.0 habitat.task.lab_sensors.receptacle_segmentation_sensor.blank_out_prob=0.0 habitat.task.base_angle_noise=0.0"
+fi
+
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_nav_to_obj_reward.explore_reward=${EXPLORE_REWARD}"
+
 echo $EXP_NAME
 
-sbatch --gpus ${GPUS} --ntasks-per-node ${GPUS} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
+sbatch --gpus $((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES}  --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
 
 # ENVS=1
 # export EXP_NAME=${EXP_NAME}_debug
