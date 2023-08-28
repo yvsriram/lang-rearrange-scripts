@@ -6,7 +6,7 @@ export NODES=2
 export GPUS_PER_NODE=8
 export INPUTS=goal_recep_depth
 export OBS_KEYS="['head_depth','object_embedding','ovmm_nav_goal_segmentation','receptacle_segmentation','start_receptacle','robot_start_gps','robot_start_compass']"
-export EXPLORE_REWARD=5.0
+export EXPLORE_REWARD=0.0
 export NO_AUGS=true
 
 
