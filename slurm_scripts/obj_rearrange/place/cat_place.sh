@@ -2,19 +2,17 @@
 
 export EXP_CONFIG=ovmm/rl_skill.yaml
 export ENVS=16
-export NODES=8
-export GPUS=8
+export GPUS_PER_NODE=8
+export NODES=2
 
 export INPUTS=goal_recep_depth
 export OBS_KEYS="['head_depth','goal_receptacle','joint','is_holding','object_embedding','goal_recep_segmentation']"
 
 
-export EPS_KEY="v4_train"
-# export DATA_PATH="data/episodes/rearrange/v4/train/cat_npz-exp.json.gz"
+export EPS_KEY="new_train"
 export DATA_PATH="data/datasets/ovmm/train/episodes.json.gz"
 
-export EXP_NAME=place/input_${INPUTS}_${ENVS}x${GPUS}x${NODES}_envs_${EPS_KEY}_stability_checks_start_in_nav_mode_with_manip_action_penalty_test_add_penalities_new_again
-
+export EXP_NAME=place/input_${INPUTS}_${ENVS}x${GPUS}x${NODES}_envs_${EPS_KEY}_no_colls_term_no_augs_no_vel_thresh
 
 mkdir -p slurm_logs/${EXP_NAME}
 export HABITAT_SIM_LOG=quiet
@@ -25,16 +23,21 @@ export MORE_OPTIONS="benchmark/ovmm=place"
 export MORE_OPTIONS="${MORE_OPTIONS} habitat.dataset.split=train"
 
 
-export MORE_OPTIONS="${MORE_OPTIONS}   habitat.task.measurements.ovmm_place_reward.stability_reward=1 habitat.task.measurements.ovmm_place_reward.navmesh_violate_pen=0.0"
-export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo "
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_place_reward.stability_reward=1.0 habitat.task.measurements.ovmm_place_reward.navmesh_violate_pen=0.0"
 
-# export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_place_reward.sparse_reward=False habitat.task.measurements.ovmm_place_reward.max_steps_to_reach_surface=20"
-# export EXP_NAME=${EXP_NAME}_sparse_reward_False_max_steps_to_reach_surface_20
+
+# do not terminate on collisions
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_place_reward.robot_collisions_pen=0.0 habitat.task.measurements.ovmm_place_reward.robot_collisions_end_pen=0.0 habitat.task.measurements.robot_collisions_terminate.max_num_collisions=-1 habitat.task.measurements.object_at_rest.angular_vel_thresh=100.0 habitat.task.measurements.object_at_rest.linear_vel_thresh=100.0"
+
+export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo"
+
 echo $EXP_NAME
 
-sbatch --gpus ${GPUS} --ntasks-per-node ${GPUS} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
-
 # python speed_profile.py --cfg-path habitat-lab/habitat/config/benchmark/rearrange/cat_nav_to_rec.yaml habitat.dataset.data_path=data/episodes/rearrange/v4/val/cat_npz-exp.json.gz habitat.dataset.split=val 
+
+sbatch --gpus $((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
+
+
 # ENVS=1
 # export EXP_NAME=${EXP_NAME}_debug
 # python -u -m habitat_baselines.run  \
