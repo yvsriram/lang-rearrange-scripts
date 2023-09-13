@@ -7,12 +7,13 @@ export NODES=2
 
 export INPUTS=goal_recep_depth
 export OBS_KEYS="['head_depth','goal_receptacle','joint','is_holding','object_embedding','goal_recep_segmentation']"
+export GRASP_THRESHOLD=0.0
 
 
 export EPS_KEY="new_train"
 export DATA_PATH="data/datasets/ovmm/train/episodes.json.gz"
 
-export EXP_NAME=place/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}_no_terms_obj_anywhere_on_goal
+export EXP_NAME=place/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}_no_terms_obj_anywhere_on_goal_grasp_threshold_${GRASP_THRESHOLD}
 
 mkdir -p slurm_logs/${EXP_NAME}
 export HABITAT_SIM_LOG=quiet
@@ -22,9 +23,9 @@ export WB_GROUP=cat_place
 export MORE_OPTIONS="benchmark/ovmm=place"
 export MORE_OPTIONS="${MORE_OPTIONS} habitat.dataset.split=train"
 
-
 export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_place_reward.stability_reward=1.0 habitat.task.measurements.ovmm_place_reward.navmesh_violate_pen=0.0"
 
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.actions.arm_action.grasp_threshold=${GRASP_THRESHOLD}"
 
 # do not terminate on collisions
 export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_place_reward.robot_collisions_pen=0.0 habitat.task.measurements.ovmm_place_reward.robot_collisions_end_pen=0.0 habitat.task.measurements.robot_collisions_terminate.max_num_collisions=-1 habitat.task.measurements.object_at_rest.angular_vel_thresh=100.0 habitat.task.measurements.object_at_rest.linear_vel_thresh=100.0"
@@ -35,6 +36,7 @@ export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.force_terminate.m
 
 # use obj anywhere on goal as success measure
 export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_place_success.check_stability=False"
+
 
 export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.trainer_name=ddppo"
 
