@@ -30,7 +30,7 @@ fi
 
 # export MUST_FACE=true
 # export CALL_STOP=true
-export EXP_NAME=end_to_end/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}_no_augs_${NO_AUGS}_navmesh_pen_${NAVMESH_PEN}_cont_actions_${CONT_ACTIONS}_v1
+export EXP_NAME=end_to_end/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}_no_augs_${NO_AUGS}_navmesh_pen_${NAVMESH_PEN}_cont_actions_${CONT_ACTIONS}_reward_fixed
 
 
 if [ $CONT_ACTIONS = true ]; then
@@ -66,7 +66,7 @@ else
     export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.rl.ddppo.normalize_visual_inputs=False"
 fi
 
-export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.place_init=True"
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.place_init=True habitat.task.skills_completed_at_start=3"
 
 # export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_nav_to_obj_reward.explore_reward=${EXPLORE_REWARD}"
 

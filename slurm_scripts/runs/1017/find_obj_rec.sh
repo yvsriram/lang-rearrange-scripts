@@ -31,7 +31,7 @@ fi
 
 export MUST_FACE=true
 export CALL_STOP=true
-export EXP_NAME=multi_task/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}_no_augs_${NO_AUGS}_navmesh_pen_${NAVMESH_PEN}_cont_actions_${CONT_ACTIONS}_find_obj_rec
+export EXP_NAME=multi_task/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}_no_augs_${NO_AUGS}_navmesh_pen_${NAVMESH_PEN}_cont_actions_${CONT_ACTIONS}_find_obj_rec_constraint_arm
 
 
 
