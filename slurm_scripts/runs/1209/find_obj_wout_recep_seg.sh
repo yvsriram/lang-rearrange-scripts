@@ -7,8 +7,8 @@ else
     export EXP_CONFIG=ovmm/rl_discrete_skill.yaml
 fi
 export ENVS=16
-export NODES=4
-export GPUS_PER_NODE=1
+export NODES=2
+export GPUS_PER_NODE=8
 
 export INPUTS=goal_recep_depth_wout_recep_seg
 export OBS_KEYS="['head_depth','object_embedding','ovmm_nav_goal_segmentation','start_receptacle','robot_start_gps','robot_start_compass']"
@@ -94,7 +94,7 @@ export WB_GROUP=find_obj
 
 echo $EXP_NAME
 
-sbatch  --gpus a40:$((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
+sbatch  --gpus $((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
 
 # ENVS=1
 # export EXP_NAME=${EXP_NAME}_debug

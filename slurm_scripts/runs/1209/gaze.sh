@@ -3,8 +3,8 @@
 export EXP_CONFIG=ovmm/rl_cont_skill.yaml
 
 export ENVS=16
-export GPUS_PER_NODE=1
-export NODES=8
+export GPUS_PER_NODE=8
+export NODES=2
 
 export INPUTS=obj_emb_seg_depth
 export OBS_KEYS="['head_depth','start_receptacle','start_recep_segmentation','object_segmentation','object_embedding','joint']"
@@ -48,7 +48,7 @@ fi
 mkdir -p slurm_logs/${EXP_NAME}
 export WB_RUN_NAME=${EXP_NAME}
 
-sbatch --gpus a40:$((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
+sbatch --gpus $((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
 
 
 # ENVS=1
