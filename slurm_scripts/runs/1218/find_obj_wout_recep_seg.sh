@@ -7,8 +7,8 @@ else
     export EXP_CONFIG=ovmm/rl_discrete_skill.yaml
 fi
 export ENVS=16
-export NODES=2
-export GPUS_PER_NODE=8
+export NODES=8
+export GPUS_PER_NODE=1
 
 export INPUTS=goal_recep_depth_wout_recep_seg
 export OBS_KEYS="['head_depth','object_embedding','ovmm_nav_goal_segmentation','start_receptacle','robot_start_gps','robot_start_compass']"
@@ -20,7 +20,7 @@ export DROPOUT=0.0
 export NORMALIZE_VISUAL_INPUTS=false
 export PRETRAINED=false
 export PRETRAINED_PATH="data/new_checkpoints/find_obj/input_goal_recep_depth_16x8x2_envs_new_train_explore_reward_0.0_no_augs_true_navmesh_pen_0.0_cont_actions_false_must_call_stop_true_must_face_true__remove_iou/ckpt.10.pth"
-
+export EVALUATE=False
 export EPS_KEY="new_train"
 export DATA_PATH="data/datasets/ovmm/train/episodes.json.gz"
 
@@ -94,7 +94,12 @@ export WB_GROUP=find_obj
 
 echo $EXP_NAME
 
-# sbatch  --gpus $((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
+if [ $EVALUATE = "True" ]; then
+    NODES=1
+    GPUS_PER_NODE=1
+fi
+
+sbatch  --gpus a40:$((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
 
 # ENVS=1
 # export EXP_NAME=${EXP_NAME}_debug

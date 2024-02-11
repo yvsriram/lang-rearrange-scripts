@@ -7,19 +7,21 @@ else
     export EXP_CONFIG=ovmm/rl_discrete_skill.yaml
 fi
 export ENVS=16
-export NODES=2
-export GPUS_PER_NODE=8
+export NODES=8
+export GPUS_PER_NODE=1
 
 export INPUTS=goal_recep_depth_wout_recep_seg
-export OBS_KEYS="['head_depth','object_embedding','ovmm_nav_goal_segmentation','start_receptacle','robot_start_gps','robot_start_compass']"
+export OBS_KEYS="['head_depth','ovmm_nav_goal_segmentation','goal_receptacle','robot_start_gps','robot_start_compass']"
 export EXPLORE_REWARD=0.0
 export NO_AUGS=false
 export NAVMESH_PEN=0.0
 export OVERFIT=false
-export DROPOUT=0.0
+export DROPOUT=0.5
 export NORMALIZE_VISUAL_INPUTS=false
 export PRETRAINED=false
-export PRETRAINED_PATH="data/new_checkpoints/find_obj/input_goal_recep_depth_16x8x2_envs_new_train_explore_reward_0.0_no_augs_true_navmesh_pen_0.0_cont_actions_false_must_call_stop_true_must_face_true__remove_iou/ckpt.10.pth"
+export USE_IOU=true
+export REWARD_TURN=true
+export PRETRAINED_PATH="data/new_checkpoints/find_rec/input_goal_recep_depth_16x4x1_envs_new_train_explore_reward_0.0_no_augs_true_navmesh_pen_0.0_cont_actions_false_must_call_stop_true_must_face_true_remove_iou_/ckpt.3.pth"
 
 export EPS_KEY="new_train"
 export DATA_PATH="data/datasets/ovmm/train/episodes.json.gz"
@@ -31,18 +33,29 @@ fi
 
 export MUST_FACE=true
 export CALL_STOP=true
-export EXP_NAME=find_obj/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}_explore_reward_${EXPLORE_REWARD}_no_augs_${NO_AUGS}_navmesh_pen_${NAVMESH_PEN}_cont_actions_${CONT_ACTIONS}_
+export EXP_NAME=find_rec/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}_explore_reward_${EXPLORE_REWARD}_no_augs_${NO_AUGS}_navmesh_pen_${NAVMESH_PEN}_cont_actions_${CONT_ACTIONS}_must_call_stop_${CALL_STOP}_must_face_${MUST_FACE}_reward_turn_${REWARD_TURN}_use_iou_${USE_IOU}_again_correct_one_
 
 
 
 if [ $CONT_ACTIONS = true ]; then
-    export MORE_OPTIONS="benchmark/ovmm=nav_to_obj"
-    export MORE_OPTIONS="habitat/task/ovmm=nav_to_obj_cont"
+    export MORE_OPTIONS="benchmark/ovmm=nav_to_rec"
+    export MORE_OPTIONS="habitat/task/ovmm=nav_to_rec_cont"
 else
-    export MORE_OPTIONS="benchmark/ovmm=nav_to_obj"
+    export MORE_OPTIONS="benchmark/ovmm=nav_to_rec"
 fi
 
 export MORE_OPTIONS="${MORE_OPTIONS} habitat.dataset.split=train"
+
+if [ $USE_IOU = true ]; then
+    export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_nav_to_obj_success.min_object_coverage_iou=1e-3 habitat.task.measurements.ovmm_nav_to_obj_success.success_angle_dist=3.14"
+fi
+
+if [ $REWARD_TURN = false ]; then
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_nav_to_obj_reward.should_reward_turn=False"
+else
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.measurements.ovmm_nav_to_obj_reward.should_reward_turn=True"
+fi
+
 
 if [ $NO_AUGS = true ]; then
     export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.lab_sensors.ovmm_nav_goal_segmentation_sensor.blank_out_prob=0.0 habitat.task.lab_sensors.receptacle_segmentation_sensor.blank_out_prob=0.0"
@@ -89,15 +102,15 @@ mkdir -p slurm_logs/${EXP_NAME}
 export HABITAT_SIM_LOG=quiet
 
 export WB_RUN_NAME=${EXP_NAME}
-export WB_GROUP=find_obj
+export WB_GROUP=find_rec
 
 
 echo $EXP_NAME
 
-# sbatch  --gpus $((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
+sbatch  --gpus a40:$((NODES*GPUS_PER_NODE)) --ntasks-per-node ${GPUS_PER_NODE} --nodes ${NODES} --error slurm_logs/${EXP_NAME}/err --output slurm_logs/${EXP_NAME}/out lang-rearrange-scripts/slurm_scripts/default_slurm.sh
 
 # ENVS=1
-# export EXP_NAME=${EXP_NAME}_debug
+# export EXP_NAME=${EXP_NAME}_debug_
 # python -u -m habitat_baselines.run  \
 #     --config-name ${EXP_CONFIG} habitat_baselines.evaluate=False habitat_baselines.tensorboard_dir="tb/${EXP_NAME}/" \
 #     habitat_baselines.video_dir=video_dir/${EXP_NAME}/ habitat_baselines.eval_ckpt_path_dir="data/new_checkpoints/${EXP_NAME}/" \

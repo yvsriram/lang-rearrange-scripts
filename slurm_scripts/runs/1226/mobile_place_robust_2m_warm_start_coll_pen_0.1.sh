@@ -16,10 +16,10 @@ export SPARSE_REWARD=true
 
 export MAX_EPISODE_STEPS=350
 export MAX_SURFACE_STEPS=20
-export CONSTRAINT_BASE_IN_MANIP_MODE=false
+export CONSTRAINT_BASE_IN_MANIP_MODE=true
 export STATIC=false
-export COLLISIONS_PEN=0.0
-export COLLISIONS_END_PEN=0.0
+export COLLISIONS_PEN=0.1
+export COLLISIONS_END_PEN=0.1
 export MAX_COLLS=-1 #0 # -1
 export NORMALIZE_VISUAL_INPUTS=false
 if [ $STATIC = true ]; then
@@ -28,13 +28,13 @@ else
     export SKILL="place"
 fi
 
-export PRETRAINED=false
+export PRETRAINED=true
 # export PRETRAINED_PATH="data/new_checkpoints/place/input_goal_recep_depth_16x4x1_envs_new_train_no_colls_term_no_augs_no_vel_thresh_stability_0_drop_pen_once_True_sparse_true_max_episode_steps_350_max_surface_steps_20_constraint_base_manip_mode_false_pub_branch/ckpt.9.pth"
 
-export PRETRAINED_PATH="data/new_checkpoints/place/input_goal_recep_depth_16x1x1_envs_new_train_no_colls_term_no_augs_no_vel_thresh_stability_0_drop_pen_once_True_sparse_false_max_episode_steps_350_max_surface_steps_20_constraint_base_manip_mode_false_pub_branch/ckpt.4.pth"
+export PRETRAINED_PATH="data/new_checkpoints/place/input_goal_recep_depth_16x1x8_envs_new_train_no_augs_stability_0_drop_pen_once_True_sparse_true_max_surface_steps_20_constraint_base_manip_mode_false_vel_constraints_coll_pen_0.0_0.0_end_pen_max_-1_colls_again_robust_2m/ckpt.9.pth"
 
 
-export EXP_NAME=${SKILL}/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}_no_augs_stability_0_drop_pen_once_True_sparse_${SPARSE_REWARD}_max_surface_steps_${MAX_SURFACE_STEPS}_constraint_base_manip_mode_${CONSTRAINT_BASE_IN_MANIP_MODE}_vel_constraints_coll_pen_${COLLISIONS_PEN}_${COLLISIONS_END_PEN}_end_pen_max_${MAX_COLLS}_colls_again_
+export EXP_NAME=${SKILL}/input_${INPUTS}_${ENVS}x${GPUS_PER_NODE}x${NODES}_envs_${EPS_KEY}_no_augs_stability_0_drop_pen_once_True_sparse_${SPARSE_REWARD}_max_surface_steps_${MAX_SURFACE_STEPS}_constraint_base_manip_mode_${CONSTRAINT_BASE_IN_MANIP_MODE}_vel_constraints_coll_pen_${COLLISIONS_PEN}_${COLLISIONS_END_PEN}_end_pen_max_${MAX_COLLS}_colls_again_robust_2m
 
 
 
@@ -50,6 +50,7 @@ export WB_GROUP=cat_${SKILL}
 export MORE_OPTIONS="benchmark/ovmm=${SKILL}"
 export MORE_OPTIONS="${MORE_OPTIONS} habitat.dataset.split=train"
 
+export MORE_OPTIONS="${MORE_OPTIONS} habitat.task.spawn_reference=target habitat.task.spawn_max_dist_to_obj=2.0"
 
 if [ $NORMALIZE_VISUAL_INPUTS = true ]; then
     export MORE_OPTIONS="${MORE_OPTIONS} habitat_baselines.rl.ddppo.normalize_visual_inputs=True"

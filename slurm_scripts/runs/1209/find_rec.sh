@@ -19,7 +19,7 @@ export OVERFIT=false
 export DROPOUT=0.0
 export NORMALIZE_VISUAL_INPUTS=false
 export PRETRAINED=false
-export USE_IOU=false
+export USE_IOU=true
 export REWARD_TURN=true
 export PRETRAINED_PATH="data/new_checkpoints/find_rec/input_goal_recep_depth_16x4x1_envs_new_train_explore_reward_0.0_no_augs_true_navmesh_pen_0.0_cont_actions_false_must_call_stop_true_must_face_true_remove_iou_/ckpt.3.pth"
 
